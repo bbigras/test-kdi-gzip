@@ -1,0 +1,21 @@
+---
+version: '2'
+services:
+  redpanda:
+    image: "vectorized/redpanda"
+    ports:
+      - 9092:9092
+    command: >-
+      redpanda start
+      --overprovisioned --smp=1 --memory=1G --reserve-memory=0M
+      --node-id=0 --check=false
+      --kafka-addr PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      --advertise-kafka-addr PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+  vector:
+    image: "timberio/vector:0.17.3-debian"
+    depends_on:
+      - redpanda
+    volumes:
+      - ./vector.toml:/etc/vector/vector.toml:ro
+      - ./data/:/data/
+      - ./log:/log:ro

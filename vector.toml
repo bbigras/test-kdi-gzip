@@ -1,0 +1,14 @@
+data_dir = "/data"
+
+[sources.my_source]
+  type = "file"
+  include = ["/log"]
+  read_from = "beginning"
+
+[sinks.kafka]
+  type = "kafka"
+  inputs = ["my_source"]
+  bootstrap_servers = "redpanda:29092"
+  # compression = "gzip"
+  topic = "my-topic"
+  encoding.codec = "json"
